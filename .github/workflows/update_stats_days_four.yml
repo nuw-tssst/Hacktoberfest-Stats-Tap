@@ -1,7 +1,10 @@
 name: Update stats - past four days
 
-# fetch data for the current and past 3 days
+# fetch data for the current and past 3 days - scheduled for every 4th day in October and 1st Nov (for 29-31 Oct)
 on:
+  schedule:
+    - cron: '50 23 4,8,12,16,20,24,28 10 *'
+    - cron: '59 13 1 11 *'
   workflow_dispatch:
 
 permissions:
