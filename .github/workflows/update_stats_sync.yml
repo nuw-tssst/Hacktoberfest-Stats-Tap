@@ -1,0 +1,404 @@
+name: Update stats
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: push-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  run-parallel-step-1:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [1, 2, 3, 4]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.REPO_NAME }}
+          ref: main
+          token: ${{ secrets.REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run
+        env:
+          GH_TOKEN: ${{ secrets[format('GH_TOKEN_{0}', matrix.job)] }}
+          KEY: ${{ secrets.KEY }}
+          JOB_ID: ${{ matrix.job }}
+          NUM_JOBS: ${{ strategy.job-total }}
+        run: |
+          MONTH=$(date -u +%m)
+          if [ "$MONTH" -eq 10 ]; then
+            DAY=$(date -u +%d | sed 's/^0//')
+          else
+            DAY=31
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1
+
+      - name: Move files to artifacts
+        env:
+          JOB_ID: ${{ matrix.job }}
+        run: |
+          mkdir -p "out/tmp_step_1_job_${JOB_ID}"
+          shopt -s nullglob
+          matches=(files/tmp_step_1_job_$((10#$JOB_ID - 1))*)
+          if ((${#matches[@]})); then
+            cp -f "${matches[@]}" "out/tmp_step_1_job_${JOB_ID}/"
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmp_step_1_job_${{ matrix.job }}
+          path: out/tmp_step_1_job_${{ matrix.job }}/
+          if-no-files-found: ignore
+          retention-days: 1
+
+  run-parallel-step-2:
+    runs-on: ubuntu-latest
+    needs: run-parallel-step-1
+
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [ 1, 2, 3, 4 ]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.REPO_NAME }}
+          ref: main
+          token: ${{ secrets.REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: tmp_step_1_job*
+          path: _aggregate
+          merge-multiple: true
+
+      - name: Move files from artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p files
+          find _aggregate -type f -print -exec mv -f {} files/ \;
+
+      - name: Run
+        env:
+          GH_TOKEN: ${{ secrets[format('GH_TOKEN_{0}', matrix.job)] }}
+          KEY: ${{ secrets.KEY }}
+          JOB_ID: ${{ matrix.job }}
+          NUM_JOBS: ${{ strategy.job-total }}
+        run: |
+          MONTH=$(date -u +%m)
+          if [ "$MONTH" -eq 10 ]; then
+            DAY=$(date -u +%d | sed 's/^0//')
+          else
+            DAY=31
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2
+
+      - name: Move files to artifacts
+        env:
+          JOB_ID: ${{ matrix.job }}
+        run: |
+          mkdir -p "out/tmp_step_2_job_${JOB_ID}"
+          shopt -s nullglob
+          matches=(files/tmp_step_2_job_$((10#$JOB_ID - 1))*)
+          if ((${#matches[@]})); then
+            cp -f "${matches[@]}" "out/tmp_step_2_job_${JOB_ID}/"
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmp_step_2_job_${{ matrix.job }}
+          path: out/tmp_step_2_job_${{ matrix.job }}/
+          if-no-files-found: ignore
+          retention-days: 1
+
+  run-parallel-step-3:
+    runs-on: ubuntu-latest
+    needs: run-parallel-step-2
+
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [ 1, 2, 3, 4 ]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.REPO_NAME }}
+          ref: main
+          token: ${{ secrets.REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run
+        env:
+          GH_TOKEN: ${{ secrets[format('GH_TOKEN_{0}', matrix.job)] }}
+          KEY: ${{ secrets.KEY }}
+          JOB_ID: ${{ matrix.job }}
+          NUM_JOBS: ${{ strategy.job-total }}
+        run: |
+          MONTH=$(date -u +%m)
+          if [ "$MONTH" -eq 10 ]; then
+            DAY=$(date -u +%d | sed 's/^0//')
+          else
+            DAY=31
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3
+
+      - name: Move files to artifacts
+        env:
+          JOB_ID: ${{ matrix.job }}
+        run: |
+          mkdir -p "out/tmp_step_3_job_${JOB_ID}"
+          shopt -s nullglob
+          matches=(files/tmp_step_3_job_$((10#$JOB_ID - 1))*)
+          if ((${#matches[@]})); then
+            cp -f "${matches[@]}" "out/tmp_step_3_job_${JOB_ID}/"
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmp_step_3_job_${{ matrix.job }}
+          path: out/tmp_step_3_job_${{ matrix.job }}/
+          if-no-files-found: ignore
+          retention-days: 1
+
+  run-parallel-step-4:
+    runs-on: ubuntu-latest
+    needs: run-parallel-step-3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [ 1, 2, 3, 4 ]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.REPO_NAME }}
+          ref: main
+          token: ${{ secrets.REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: tmp_step_3_job*
+          path: _aggregate
+          merge-multiple: true
+
+      - name: Move files from artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p files
+          find _aggregate -type f -print -exec mv -f {} files/ \;
+
+      - name: Run
+        env:
+          GH_TOKEN: ${{ secrets[format('GH_TOKEN_{0}', matrix.job)] }}
+          KEY: ${{ secrets.KEY }}
+          JOB_ID: ${{ matrix.job }}
+          NUM_JOBS: ${{ strategy.job-total }}
+        run: |
+          MONTH=$(date -u +%m)
+          if [ "$MONTH" -eq 10 ]; then
+            DAY=$(date -u +%d | sed 's/^0//')
+          else
+            DAY=31
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4
+
+      - name: Move files to artifacts
+        env:
+          JOB_ID: ${{ matrix.job }}
+        run: |
+          mkdir -p "out/tmp_step_4_job_${JOB_ID}"
+          shopt -s nullglob
+          matches=(files/tmp_step_4_job_$((10#$JOB_ID - 1))*)
+          if ((${#matches[@]})); then
+            cp -f "${matches[@]}" "out/tmp_step_4_job_${JOB_ID}/"
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tmp_step_4_job_${{ matrix.job }}
+          path: out/tmp_step_4_job_${{ matrix.job }}/
+          if-no-files-found: ignore
+          retention-days: 1
+
+  run-parallel-step-5:
+    runs-on: ubuntu-latest
+    needs: run-parallel-step-4
+
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [ 1, 2, 3, 4 ]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.REPO_NAME }}
+          ref: main
+          token: ${{ secrets.REPO_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install
+        env:
+          PIP_DISABLE_PIP_VERSION_CHECK: "1"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*'
+          path: _aggregate
+          merge-multiple: true
+
+      - name: Move files from artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p files
+          find _aggregate -type f -print -exec mv -f {} files/ \;
+
+      - name: Run
+        env:
+          GH_TOKEN: ${{ secrets[format('GH_TOKEN_{0}', matrix.job)] }}
+          KEY: ${{ secrets.KEY }}
+          JOB_ID: ${{ matrix.job }}
+          NUM_JOBS: ${{ strategy.job-total }}
+        run: |
+          MONTH=$(date -u +%m)
+          if [ "$MONTH" -eq 10 ]; then
+            DAY=$(date -u +%d | sed 's/^0//')
+          else
+            DAY=31
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5
+
+      - name: Update repo
+        env:
+          GH_TOKEN: ${{ secrets.REPO_TOKEN }}
+          REPO: ${{ secrets.REPO_NAME }}
+        run: |
+          git add files/*.csv || true
+          if ! git diff --cached --quiet; then
+            git config user.name "Adam Ross"
+            git config user.email "14985050+R055A@users.noreply.github.com"
+            git commit -m "Update $(date -u +'%Y') Hacktoberfest stats"
+
+            for attempt in 1 2 3 4 5; do
+              git pull --rebase "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" main || true
+              if git push "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:main; then
+                break
+              fi
+              echo "Push fail #$attempt..."
+              sleep $(((RANDOM % 8) + 3))
+            done
+          fi
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: run-parallel-step-5
+
+    permissions:
+      actions: write
+      contents: read
+
+    steps:
+      - name: Delete artifacts
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          ids=$(gh api --paginate repos/$REPO/actions/runs/$RUN_ID/artifacts -q '.artifacts[].id')
+          if [ -n "${ids:-}" ]; then
+            for id in $ids; do
+              echo "Deleting artifact id=$id"
+              gh api -X DELETE repos/$REPO/actions/artifacts/$id || true
+            done
+          fi
