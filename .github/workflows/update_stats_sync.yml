@@ -56,13 +56,13 @@ jobs:
           fi
           HOUR=$(date -u +%H)
           if [ "$HOUR" -lt 8 ]; then
-            QUARTER=1
+            THIRD=1
           elif [ "$HOUR" -lt 16 ]; then
-            QUARTER=2
+            THIRD=2
           else
-            QUARTER=3
+            THIRD=3
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --quarter "${QUARTER}"
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --third "${THIRD}"
 
       - name: Move files to artifacts
         env:
@@ -143,13 +143,13 @@ jobs:
           fi
           HOUR=$(date -u +%H)
           if [ "$HOUR" -lt 8 ]; then
-            QUARTER=1
+            THIRD=1
           elif [ "$HOUR" -lt 16 ]; then
-            QUARTER=2
+            THIRD=2
           else
-            QUARTER=3
+            THIRD=3
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2 --quarter "${QUARTER}"
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2 --third "${THIRD}"
 
       - name: Move files to artifacts
         env:
@@ -216,13 +216,14 @@ jobs:
           fi
           HOUR=$(date -u +%H)
           if [ "$HOUR" -lt 8 ]; then
-            QUARTER=1
+            THIRD=1
           elif [ "$HOUR" -lt 16 ]; then
-            QUARTER=2
+            THIRD=2
           else
-            QUARTER=3
+            THIRD=3
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3 --quarter "${QUARTER}"
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3 --third "${THIRD}"
+
 
       - name: Move files to artifacts
         env:
@@ -303,13 +304,13 @@ jobs:
           fi
           HOUR=$(date -u +%H)
           if [ "$HOUR" -lt 8 ]; then
-            QUARTER=1
+            THIRD=1
           elif [ "$HOUR" -lt 16 ]; then
-            QUARTER=2
+            THIRD=2
           else
-            QUARTER=3
+            THIRD=3
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4 --quarter "${QUARTER}"
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4 --third "${THIRD}"
 
       - name: Move files to artifacts
         env:
@@ -390,13 +391,13 @@ jobs:
           fi
           HOUR=$(date -u +%H)
           if [ "$HOUR" -lt 8 ]; then
-            QUARTER=1
+            THIRD=1
           elif [ "$HOUR" -lt 16 ]; then
-            QUARTER=2
+            THIRD=2
           else
-            QUARTER=3
+            THIRD=3
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5 --quarter "${QUARTER}"
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5 --third "${THIRD}"
 
       - name: Update repo
         env:
