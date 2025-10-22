@@ -54,8 +54,17 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --am "${IS_AM}"
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" -lt 6 ]; then
+            QUARTER=1
+          elif [ "$HOUR" -lt 12 ]; then
+            QUARTER=2
+          elif [ "$HOUR" -lt 18 ]; then
+            QUARTER=3
+          else
+            QUARTER=4
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --quarter "${QUARTER}"
 
       - name: Move files to artifacts
         env:
@@ -134,8 +143,17 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2 --am "${IS_AM}"
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" -lt 6 ]; then
+            QUARTER=1
+          elif [ "$HOUR" -lt 12 ]; then
+            QUARTER=2
+          elif [ "$HOUR" -lt 18 ]; then
+            QUARTER=3
+          else
+            QUARTER=4
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2 --quarter "${QUARTER}"
 
       - name: Move files to artifacts
         env:
@@ -200,8 +218,17 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3 --am "${IS_AM}"
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" -lt 6 ]; then
+            QUARTER=1
+          elif [ "$HOUR" -lt 12 ]; then
+            QUARTER=2
+          elif [ "$HOUR" -lt 18 ]; then
+            QUARTER=3
+          else
+            QUARTER=4
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3 --quarter "${QUARTER}"
 
       - name: Move files to artifacts
         env:
@@ -280,8 +307,17 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4 --am "${IS_AM}"
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" -lt 6 ]; then
+            QUARTER=1
+          elif [ "$HOUR" -lt 12 ]; then
+            QUARTER=2
+          elif [ "$HOUR" -lt 18 ]; then
+            QUARTER=3
+          else
+            QUARTER=4
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4 --quarter "${QUARTER}"
 
       - name: Move files to artifacts
         env:
@@ -360,8 +396,17 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5 --am "${IS_AM}"
+          HOUR=$(date -u +%H)
+          if [ "$HOUR" -lt 6 ]; then
+            QUARTER=1
+          elif [ "$HOUR" -lt 12 ]; then
+            QUARTER=2
+          elif [ "$HOUR" -lt 18 ]; then
+            QUARTER=3
+          else
+            QUARTER=4
+          fi
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5 --quarter "${QUARTER}"
 
       - name: Update repo
         env:
