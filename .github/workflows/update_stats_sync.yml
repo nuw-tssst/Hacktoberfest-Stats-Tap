@@ -55,14 +55,12 @@ jobs:
             DAY=31
           fi
           HOUR=$(date -u +%H)
-          if [ "$HOUR" -lt 6 ]; then
+          if [ "$HOUR" -lt 8 ]; then
             QUARTER=1
-          elif [ "$HOUR" -lt 12 ]; then
+          elif [ "$HOUR" -lt 16 ]; then
             QUARTER=2
-          elif [ "$HOUR" -lt 18 ]; then
-            QUARTER=3
           else
-            QUARTER=4
+            QUARTER=3
           fi
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --quarter "${QUARTER}"
 
@@ -144,14 +142,12 @@ jobs:
             DAY=31
           fi
           HOUR=$(date -u +%H)
-          if [ "$HOUR" -lt 6 ]; then
+          if [ "$HOUR" -lt 8 ]; then
             QUARTER=1
-          elif [ "$HOUR" -lt 12 ]; then
+          elif [ "$HOUR" -lt 16 ]; then
             QUARTER=2
-          elif [ "$HOUR" -lt 18 ]; then
-            QUARTER=3
           else
-            QUARTER=4
+            QUARTER=3
           fi
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2 --quarter "${QUARTER}"
 
@@ -219,14 +215,12 @@ jobs:
             DAY=31
           fi
           HOUR=$(date -u +%H)
-          if [ "$HOUR" -lt 6 ]; then
+          if [ "$HOUR" -lt 8 ]; then
             QUARTER=1
-          elif [ "$HOUR" -lt 12 ]; then
+          elif [ "$HOUR" -lt 16 ]; then
             QUARTER=2
-          elif [ "$HOUR" -lt 18 ]; then
-            QUARTER=3
           else
-            QUARTER=4
+            QUARTER=3
           fi
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3 --quarter "${QUARTER}"
 
@@ -308,14 +302,12 @@ jobs:
             DAY=31
           fi
           HOUR=$(date -u +%H)
-          if [ "$HOUR" -lt 6 ]; then
+          if [ "$HOUR" -lt 8 ]; then
             QUARTER=1
-          elif [ "$HOUR" -lt 12 ]; then
+          elif [ "$HOUR" -lt 16 ]; then
             QUARTER=2
-          elif [ "$HOUR" -lt 18 ]; then
-            QUARTER=3
           else
-            QUARTER=4
+            QUARTER=3
           fi
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4 --quarter "${QUARTER}"
 
@@ -397,14 +389,12 @@ jobs:
             DAY=31
           fi
           HOUR=$(date -u +%H)
-          if [ "$HOUR" -lt 6 ]; then
+          if [ "$HOUR" -lt 8 ]; then
             QUARTER=1
-          elif [ "$HOUR" -lt 12 ]; then
+          elif [ "$HOUR" -lt 16 ]; then
             QUARTER=2
-          elif [ "$HOUR" -lt 18 ]; then
-            QUARTER=3
           else
-            QUARTER=4
+            QUARTER=3
           fi
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5 --quarter "${QUARTER}"
 
