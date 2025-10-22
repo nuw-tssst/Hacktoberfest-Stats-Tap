@@ -54,8 +54,7 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%p)" = "AM" ] && echo 1 || echo 0)
-          echo $IS_AM
+          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --am "${IS_AM}"
 
       - name: Move files to artifacts
@@ -135,7 +134,8 @@ jobs:
           else
             DAY=31
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2
+          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 2 --am "${IS_AM}"
 
       - name: Move files to artifacts
         env:
@@ -200,7 +200,8 @@ jobs:
           else
             DAY=31
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3
+          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 3 --am "${IS_AM}"
 
       - name: Move files to artifacts
         env:
@@ -279,7 +280,8 @@ jobs:
           else
             DAY=31
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4
+          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 4 --am "${IS_AM}"
 
       - name: Move files to artifacts
         env:
@@ -358,7 +360,8 @@ jobs:
           else
             DAY=31
           fi
-          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5
+          IS_AM=$([ "$(date -u +%H)" -lt 21 ] && echo 1 || echo 0)
+          python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 5 --am "${IS_AM}"
 
       - name: Update repo
         env:
