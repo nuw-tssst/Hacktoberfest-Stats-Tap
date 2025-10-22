@@ -54,7 +54,8 @@ jobs:
           else
             DAY=31
           fi
-          IS_AM=$([ "$(date -u +%p)" = "AM" ] && echo true || echo false)
+          IS_AM=$([ "$(date -u +%p)" = "AM" ] && echo 1 || echo 0)
+          echo $IS_AM
           python hack_stats_fetch.py --start "$DAY" --end "$DAY" --job "${JOB_ID}" --jobs "${NUM_JOBS}" --step 1 --am "${IS_AM}"
 
       - name: Move files to artifacts
