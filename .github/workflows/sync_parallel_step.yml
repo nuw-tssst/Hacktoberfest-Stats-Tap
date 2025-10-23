@@ -134,6 +134,14 @@ jobs:
             cp -f "${matches[@]}" "out/shared_step_${STEP}_job_${JOB_ID}/"
           fi
 
+      - name: Upload shared resources
+        uses: actions/upload-artifact@v4
+        with:
+          name: shared_step_${{ inputs.step }}_job_${{ matrix.job }}
+          path: out/shared_step_${{ inputs.step }}_job_${{ matrix.job }}/
+          if-no-files-found: ignore
+          retention-days: 1
+
       - name: Commit
         if: inputs.is_local_commit != ''
         env:
