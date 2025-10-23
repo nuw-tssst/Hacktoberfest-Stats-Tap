@@ -6,7 +6,7 @@ on:
       step:
         description: 'Synchronized parallelism step number'
         required: true
-        type: number
+        type: string
       is_prev_step_a:
         description: 'Previous step A for restoring shared resources (optional)'
         required: false

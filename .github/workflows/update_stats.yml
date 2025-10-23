@@ -15,14 +15,14 @@ jobs:
   sync-parallel-step-1:
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
-      step: 1
+      step: '1'
     secrets: inherit
 
   sync-parallel-step-2:
     needs: sync-parallel-step-1
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
-      step: 2
+      step: '2'
       is_prev_step_a: '1'
     secrets: inherit
 
@@ -30,14 +30,14 @@ jobs:
     needs: sync-parallel-step-2
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
-      step: 3
+      step: '3'
     secrets: inherit
 
   sync-parallel-step-4:
     needs: sync-parallel-step-3
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
-      step: 4
+      step: '4'
       is_prev_step_a: '3'
     secrets: inherit
 
@@ -45,7 +45,7 @@ jobs:
     needs: [sync-parallel-step-2, sync-parallel-step-4]
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
-      step: 5
+      step: '5'
       is_prev_step_a: '2'
       is_prev_step_b: '4'
       is_local_commit: 'true'
