@@ -92,22 +92,22 @@ jobs:
             DAY=31
           fi
           HOUR=$(date -u +%H)
-          if [ "$PERIOD" -lt 4 ]; then
-            PERIOD=1
-          elif [ "$PERIOD" -lt 8 ]; then
-            PERIOD=2
-          elif [ "$PERIOD" -lt 12 ]; then
-            PERIOD=3
-          elif [ "$PERIOD" -lt 16 ]; then
-            PERIOD=4
-          elif [ "$PERIOD" -lt 20 ]; then
-            PERIOD=5
+          if [ "$HOUR" -lt 4 ]; then
+            PHASE=1
+          elif [ "$HOUR" -lt 8 ]; then
+            PHASE=2
+          elif [ "$HOUR" -lt 12 ]; then
+            PHASE=3
+          elif [ "$HOUR" -lt 16 ]; then
+            PHASE=4
+          elif [ "$HOUR" -lt 20 ]; then
+            PHASE=5
           else
-            PERIOD=6
+            PHASE=6
           fi
           {
             echo "DAY=$DAY"
-            echo "PERIOD=$PERIOD"
+            echo "PHASE=$PHASE"
           } >> "$GITHUB_ENV"
 
       - name: Run step ${{ inputs.step }}
@@ -121,7 +121,7 @@ jobs:
           python hack_stats_fetch.py \
             --start "$DAY" --end "$DAY" \
             --job "${JOB_ID}" --jobs "${NUM_JOBS}" \
-            --step "${STEP}" --period "${PERIOD}"
+            --step "${STEP}" --phase "${PHASE}"
 
       - name: Update shared resources
         uses: actions/cache/save@v4
