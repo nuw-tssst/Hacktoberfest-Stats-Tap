@@ -25,10 +25,10 @@ on:
 
 permissions:
   actions: write
-  contents: write
+  contents: read
 
 jobs:
-  run-step:
+  run-parallel-step:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -57,30 +57,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Restore shared resources from previous step A
+      - name: Download shared resources from previous step A
         if: inputs.is_prev_step_a != ''
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: prevA
-          key: run-${{ github.run_id }}-step-${{ inputs.is_prev_step_a }}-job-${{ matrix.job }}
+          pattern: shared_step_${{ inputs.is_prev_step_a }}_job*
+          path: _aggregate
+          merge-multiple: true
 
-      - name: Restore shared resources from previous step B
+      - name: Download shared resources from previous step B
         if: inputs.is_prev_step_b != ''
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: prevB
-          key: run-${{ github.run_id }}-step-${{ inputs.is_prev_step_b }}-job-${{ matrix.job }}
+          pattern: shared_step_${{ inputs.is_prev_step_b }}_job*
+          path: _aggregate
+          merge-multiple: true
 
-      - name: Merge restored shared resources
+      - name: Move resource files from artifacts
         if: inputs.is_prev_step_a != ''
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p files
-          for d in prevA prevB; do
-            [ -d "$d" ] || continue
-            find "$d" -type f -exec mv -f {} files/ \;
-          done
+          find _aggregate -type f -print -exec mv -f {} files/ \;
 
       - name: Arg configuration
         shell: bash
@@ -123,11 +122,17 @@ jobs:
             --job "${JOB_ID}" --jobs "${NUM_JOBS}" \
             --step "${STEP}" --phase "${PHASE}"
 
-      - name: Update shared resources
-        uses: actions/cache/save@v4
-        with:
-          path: files
-          key: run-${{ github.run_id }}-step-${{ inputs.step }}-job-${{ matrix.job }}
+      - name: Move shared resources to artifacts
+        env:
+          JOB_ID: ${{ matrix.job }}
+          STEP: ${{ inputs.step }}
+        run: |
+          mkdir -p "out/shared_step_${STEP}_job_${JOB_ID}"
+          shopt -s nullglob
+          matches=(files/shared_step_${STEP}_job_$((10#$JOB_ID - 1))*)
+          if ((${#matches[@]})); then
+            cp -f "${matches[@]}" "out/shared_step_${STEP}_job_${JOB_ID}/"
+          fi
 
       - name: Commit
         if: inputs.is_local_commit != ''
