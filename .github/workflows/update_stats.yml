@@ -23,7 +23,7 @@ jobs:
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
       step: '2'
-      is_prev_step_a: '1'
+      prev_step_a: '1'
     secrets: inherit
 
   sync-parallelism-step-3:
@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
       step: '4'
-      is_prev_step_a: '3'
+      prev_step_a: '3'
     secrets: inherit
 
   sync-parallelism-step-5:
@@ -46,8 +46,8 @@ jobs:
     uses: ./.github/workflows/sync_parallel_step.yml
     with:
       step: '5'
-      is_prev_step_a: '2'
-      is_prev_step_b: '4'
+      prev_step_a: '2'
+      prev_step_b: '4'
       is_local_commit: 'true'
     secrets: inherit
 

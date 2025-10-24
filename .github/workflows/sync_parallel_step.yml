@@ -7,12 +7,12 @@ on:
         description: 'Synchronized parallelism step number'
         required: true
         type: string
-      is_prev_step_a:
+      prev_step_a:
         description: 'Previous step A for restoring shared resources (optional)'
         required: false
         default: ''
         type: string
-      is_prev_step_b:
+      prev_step_b:
         description: 'Previous step B for restoring shared resources (optional)'
         required: false
         default: ''
@@ -28,10 +28,10 @@ permissions:
   contents: read
 
 jobs:
-  run-parallel-step:
+  run-parallel-job:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         job: [1, 2, 3, 4]
 
@@ -81,7 +81,7 @@ jobs:
           mkdir -p files
           find _aggregate -type f -print -exec mv -f {} files/ \;
 
-      - name: Arg configuration
+      - name: Configure args
         shell: bash
         run: |
           MONTH=$(date -u +%m)
@@ -123,6 +123,7 @@ jobs:
             --step "${STEP}" --phase "${PHASE}"
 
       - name: Move shared resources to artifacts
+        if: inputs.is_local_commit == ''
         env:
           JOB_ID: ${{ matrix.job }}
           STEP: ${{ inputs.step }}
@@ -135,6 +136,7 @@ jobs:
           fi
 
       - name: Upload shared resources
+        if: inputs.is_local_commit == ''
         uses: actions/upload-artifact@v4
         with:
           name: shared_step_${{ inputs.step }}_job_${{ matrix.job }}
@@ -156,7 +158,7 @@ jobs:
           if ! git diff --cached --quiet; then
             git config user.name "Adam Ross"
             git config user.email "14985050+R055A@users.noreply.github.com"
-            git commit -m "Update $(date -u +'%Y') Hacktoberfest stats (job ${JOB_ID})"
+            git commit -m "Update $(date -u +'%Y') stats (${JOB_ID})"
 
             for attempt in 1 2 3; do
               git pull --rebase "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" main || true
