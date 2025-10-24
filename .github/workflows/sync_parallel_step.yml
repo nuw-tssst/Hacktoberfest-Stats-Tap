@@ -58,23 +58,23 @@ jobs:
           pip install -r requirements.txt
 
       - name: Download shared resources from previous step A
-        if: inputs.is_prev_step_a != ''
+        if: inputs.prev_step_a != ''
         uses: actions/download-artifact@v4
         with:
-          pattern: shared_step_${{ inputs.is_prev_step_a }}_job*
+          pattern: shared_step_${{ inputs.prev_step_a }}_job*
           path: _aggregate
           merge-multiple: true
 
       - name: Download shared resources from previous step B
-        if: inputs.is_prev_step_b != ''
+        if: inputs.prev_step_b != ''
         uses: actions/download-artifact@v4
         with:
-          pattern: shared_step_${{ inputs.is_prev_step_b }}_job*
+          pattern: shared_step_${{ inputs.prev_step_b }}_job*
           path: _aggregate
           merge-multiple: true
 
       - name: Move resource files from artifacts
-        if: inputs.is_prev_step_a != ''
+        if: inputs.prev_step_a != ''
         shell: bash
         run: |
           set -euo pipefail
